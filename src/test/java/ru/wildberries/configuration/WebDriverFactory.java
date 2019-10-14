@@ -8,15 +8,11 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.opera.OperaDriver;
-import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.util.HashMap;
 
 public class WebDriverFactory {
 
@@ -39,6 +35,9 @@ public class WebDriverFactory {
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.setCapability(ChromeOptions.CAPABILITY,"--start-maximized");
+                HashMap<String, Object> prefs = new HashMap<String, Object>();
+                prefs.put("profile.default_content_setting_values.notifications",2);
+                chromeOptions.setExperimentalOption("prefs",prefs);
                 chromeOptions.merge(externalOptions);
                 driver = new ChromeDriver(chromeOptions);
                 logger.info("Инициализирован драйвер браузера Chrome");
@@ -55,6 +54,7 @@ public class WebDriverFactory {
                 driver = null;
         }
         if (driver!=null){
+            driver.manage().deleteAllCookies();
             driver.manage().window().maximize();
         }
         return driver;
